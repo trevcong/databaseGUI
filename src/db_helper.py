@@ -2,6 +2,7 @@ class StudentDatabase:
     def __init__(self):
         self.data = []
 
+
     #load database from file "database"/students.db
     def loadDatabase(self):
         ...
