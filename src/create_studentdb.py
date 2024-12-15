@@ -37,7 +37,16 @@ def add_students_table(cur):
 
 # The add_students function adds 10 rows to the Students table.
 def add_students(cur):
-    students_info = [(129112, 'Luis', 'Amador', "1/8/2005", 'Computer Science', 3.75, "lyamador@students.unwsp.edu")]
+    students_info = [(129112, 'Luis', 'Amador', "1/8/2005", 'Computer Science', 3.75, "lyamador@students.unwsp.edu"),
+                     (129113, 'Emily', 'Johnson', "3/14/2003", 'Biology', 3.82, "emjohnson@students.unwsp.edu"),
+                     (129114, 'Michael', 'Smith', "7/22/2004", 'Mathematics', 3.90, "msmith@students.unwsp.edu"),
+                     (129115, 'Sophia', 'Brown', "11/11/2005", 'Psychology', 3.68, "sobrown@students.unwsp.edu"),
+                     (129116, 'James', 'Davis', "5/19/2003", 'Engineering', 3.45, "jadavis@students.unwsp.edu"),
+                     (129117, 'Olivia', 'Martinez', "2/25/2004", 'Nursing', 3.95, "omartinez@students.unwsp.edu"),
+                     (129118, 'William', 'Garcia', "10/8/2003", 'Physics', 3.70, "wgarcia@students.unwsp.edu"),
+                     (129119, 'Ava', 'Taylor', "6/15/2005", 'History', 3.60, "avataylor@students.unwsp.edu"),
+                     (129120, 'Ethan', 'Clark', "4/2/2004", 'Chemistry', 3.88, "eclark@students.unwsp.edu"),
+                     (129121, 'Mia', 'Hernandez', "9/30/2003", 'Art', 3.78, "mhernandez@students.unwsp.edu")]
 
     for row in students_info:
         cur.execute('''INSERT INTO Students (StudentID, First_name, Last_name, D_o_B, Major, GPA, Email)
