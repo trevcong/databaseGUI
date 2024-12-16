@@ -1,43 +1,149 @@
+import sqlite3
+import re
+import datetime
+
+#StudentDatabase class:
+#This class will serve as the database helper class
 class StudentDatabase:
-    def __init__(self):
-        self.data = []
+    def __init__(self, db="students.db"):
+        self.db = db
+        self.connection = None
+        self._initialize_database()
 
     #load database from file "database"/students.db
-    def loadDatabase(self):
-        ...
-        print("Database loaded")
+    def _initialize_database(self):
+        self.connection = sqlite3.connect(self.db)
+        cursor = self.connection.cursor()
+        cursor.execute(
+            '''
+            CREATE TABLE IF NOT EXISTS students (
+                student_id INTEGER PRIMARY KEY,
+                first_name TEXT,
+                last_name TEXT,
+                date_of_birth TEXT,
+                major TEXT,
+                gpa REAL,
+                email TEXT
+            )
+            '''
+        )
+        self.connection.commit()
     
-    #Save data to database 
-    def save(self):
-        ...
-        print("Database saved")
+    #CLOSE Database connection 
+    def close(self):
+        if self.connection:
+            self.connection.close()
+            print("Database connection closed.")
 
-    #Add record to database
+    #LOAD Database from db
+    def load(self):
+        self.connection = sqlite3.connect(self.db)
+        print("Database connection opened.")
+
+    #Add record to database with student dict object
     #ONLY ADD DATA IF data is valid
-    def addRecordToDatabase(self):
-        ...
-        print("Record added")
+    def add_record(self, student):
+        # Input validation checks
+        if not student["student_id"].isalnum():
+            print("Error: Student ID must be alphanumeric.")
+            return
+
+        if not student["first_name"].isalpha():
+            print("Error: First Name must contain only letters.")
+            return
+
+        if not student["last_name"].isalpha():
+            print("Error: Last Name must contain only letters.")
+            return
+        
+        #REGUALR EXPRESSION FOR DATE TIME
+        if not re.match(r"\d{4}-\d{2}-\d{2}", student["date_of_birth"]):
+            print("Error: Date of Birth must be in YYYY-MM-DD format.")
+            return
+        try:
+            # Parse the date and check if it's valid
+            datetime.datetime.strptime(student["date_of_birth"], "%Y-%m-%d")
+        except ValueError:
+            print("Error: Date of Birth is not a valid date.")
+            return
+
+        #REGULAR EXPRESSION FOR EMAIL FORMAT. THIS IS TO MAKE SURE EMAIL IS CORRECT FORMAT 
+        if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", student["email"]):
+            print("Error: Email format is invalid.")
+            return
+
+        if not 0.0 <= float(student["gpa"]) <= 4.0:
+            print("Error: GPA must be between 0.0 and 4.0.")
+            return
+
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute(
+                '''
+                INSERT INTO students (student_id, first_name, last_name, date_of_birth, major, gpa, email)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''',
+                (
+                    student["student_id"],
+                    student["first_name"],
+                    student["last_name"],
+                    student["date_of_birth"],
+                    student["major"],
+                    student["gpa"],
+                    student["email"]
+                )
+            )
+            self.connection.commit()
+            print("Record added successfully.")
+        except sqlite3.IntegrityError:
+            print("Error: Student ID already exists.")
+        except sqlite3.Error as e:
+            print(f"An error occurred: {e}")
    
    #Edit record from database
    #ONLY EDIT DATA IF record is found, and data is correct 
-    def editRecordFromDatabase(self):
-        ...
-        #if sucess
-            #record updated
-            #return
-        #else
-            #Invalid, not updating
-            #return
-        #If student not found
-            #Student not found, try again
+    def edit_record(self, student_id, field, new_value):
+        valid_fields = {"first_name", "last_name", "date_of_birth", "major", "gpa", "email"}
+        if field not in valid_fields:
+            print("Error: Invalid field name.")
+            return
+
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute(
+                f"UPDATE students SET {field} = ? WHERE student_id = ?",
+                (new_value, student_id)
+            )
+            if cursor.rowcount > 0:
+                self.connection.commit()
+                print("Record updated successfully.")
+            else:
+                print("Error: Student not found.")
+        except sqlite3.Error as e:
+            print(f"An error occurred: {e}")
     
     #Delete record from database
     #ONLY DELETE DATA IF valid record, "ARE YOU SURE YOU WANT TO DELTE THIS RECORD?"
-    def deleteRecordFromDatabase(self):
-        ...
-        print("Recird delted")
-
+    def delete_record(self, student_id):
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute("DELETE FROM students WHERE student_id = ?", (student_id,))
+            if cursor.rowcount > 0:
+                self.connection.commit()
+                print("Record deleted successfully.")
+            else:
+                print("Error: Student not found.")
+        except sqlite3.Error as e:
+            print(f"An error occurred: {e}")
+    
     #View record/s from database
     #View data from different queries (SELECT *, SELECT * FROM -- WHERE gpa > '2.5', ect)
-    def viewRecords(self):
-        ...
+    #TODO: ADD ABILITY TO QUERY DIFFERENT SQL STATEMENTS
+    def view_records(self):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM students")
+        records = cursor.fetchall()
+        print("\nStudent Records:")
+        for record in records:
+            print(record)
+        print()
