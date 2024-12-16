@@ -10,6 +10,7 @@ class StudentDatabase:
         self.connection = None
         self._initialize_database()
 
+
     #load database from file "database"/students.db
     def _initialize_database(self):
         self.connection = sqlite3.connect(self.db)
