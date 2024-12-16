@@ -3,7 +3,7 @@ import sqlite3
 
 def main():
     # Connect to the database.
-    conn = sqlite3.connect('students.db')
+    conn = sqlite3.connect('../database/students.db')
 
     # Get a database cursor.
     cur = conn.cursor()
@@ -60,7 +60,7 @@ def display_students(cur):
     cur.execute('SELECT * FROM Students')
     results = cur.fetchall()
     for row in results:
-        print(f'{row[0]} {row[1]} {row[2]} {row[3]} {row[4]} {row[5]} {row[6]}')
+        print(f'{row[0]}  {row[1]} {row[2]} {row[3]} {row[4]} {row[5]} {row[6]}')
 
 # Execute the main function.
 if __name__ == '__main__':
