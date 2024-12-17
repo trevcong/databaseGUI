@@ -1,14 +1,12 @@
 # databaseGUI
-Database GUI Python
+TODO: 
 
-DUE (12/13/2024): TODO
-In the last week of the course you are going to write a database program with your team that will store information about various students.
-There should be at least 7 fields for the database.  
-Decide on the fields and create the data with your team. 
-Include either a flowchart or pseudocode. Team were assigned in the Final
+VIEW RECORDS: Lets made it so you can search based on different queries
 
-Due: Thursday, December 19, 2024, 11:59 PM
-In the last week of the course you are going to write a database program with your team that will store information about various students. 
-There should be at least 7 fields for the database.
-Now create a mainline that will display the information in the database and allow the user to edit any record.  
-Show that you can share programs with GitHub, and include a link to your repo along with screenshots in your submission.
+
+GUI:
+* Make it more user freindly
+* Make it so users cant enter weird values ( ie. "GPA" for a GPA field)
+
+
+MAKE SURE MAIN.py ONLY SERVES AS A DRIVER CLASS NOT AS A HELPER CLASS db_helper.py

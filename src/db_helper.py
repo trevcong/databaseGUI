@@ -5,13 +5,16 @@ import datetime
 #StudentDatabase class:
 #This class will serve as the database helper class
 class StudentDatabase:
+    #CONSTRUCTOR
+    #name of DATABASE defaults to DB='stundents.db'
+    #Initialize the database connection and creates the students TABLE if it doesnt exist
     def __init__(self, db="students.db"):
         self.db = db
         self.connection = None
         self._initialize_database()
 
 
-    #load database from file "database"/students.db
+    #Creates the STUDENTS table
     def _initialize_database(self):
         self.connection = sqlite3.connect(self.db)
         cursor = self.connection.cursor()
@@ -30,55 +33,55 @@ class StudentDatabase:
         )
         self.connection.commit()
     
-    #CLOSE Database connection 
+    #CLOSEs the database connection
     def close(self):
         if self.connection:
             self.connection.close()
             print("Database connection closed.")
 
-    #LOAD Database from db
+    #opens a connection to the database
     def load(self):
         self.connection = sqlite3.connect(self.db)
         print("Database connection opened.")
 
-    #Add record to database with student dict object
-    #ONLY ADD DATA IF data is valid
-    def add_record(self, student):
-        # Input validation checks
+    #Validate Student Data
+    # PARAM: STUDENT OBJECT
+    # IF RETURN NONE THEN IT IS VALID DATA, otherwise return an error message.   
+    def validate_student_data(self, student):
         if not student["student_id"].isalnum():
-            print("Error: Student ID must be alphanumeric.")
-            return
+            return "Error: Student ID must be alphanumeric."
 
         if not student["first_name"].isalpha():
-            print("Error: First Name must contain only letters.")
-            return
+            return "Error: First Name must contain only letters."
 
         if not student["last_name"].isalpha():
-            print("Error: Last Name must contain only letters.")
-            return
-        
-        #REGUALR EXPRESSION FOR DATE TIME
+            return "Error: Last Name must contain only letters."
+
         if not re.match(r"\d{4}-\d{2}-\d{2}", student["date_of_birth"]):
-            print("Error: Date of Birth must be in YYYY-MM-DD format.")
-            return
+            return "Error: Date of Birth must be in YYYY-MM-DD format."
+
         try:
-            # Parse the date and check if it's valid
             datetime.datetime.strptime(student["date_of_birth"], "%Y-%m-%d")
         except ValueError:
-            print("Error: Date of Birth is not a valid date.")
-            return
+            return "Error: Date of Birth is not a valid date."
 
-        #REGULAR EXPRESSION FOR EMAIL FORMAT. THIS IS TO MAKE SURE EMAIL IS CORRECT FORMAT 
         if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", student["email"]):
-            print("Error: Email format is invalid.")
-            return
+            return "Error: Email format is invalid."
 
-        if not 0.0 <= float(student["gpa"]) <= 4.0:
-            print("Error: GPA must be between 0.0 and 4.0.")
-            return
-
-        cursor = self.connection.cursor()
         try:
+            gpa = float(student["gpa"])
+            if not 0.0 <= gpa <= 4.0:
+                return "Error: GPA must be between 0.0 and 4.0."
+        except ValueError:
+            return "Error: GPA must be a valid number."
+
+        return None
+    
+    #Adds a new student record to the database.
+    #Returns True if successful; otherwise, handles errors.
+    def add_record(self, student):
+        try:
+            cursor = self.connection.cursor()
             cursor.execute(
                 '''
                 INSERT INTO students (student_id, first_name, last_name, date_of_birth, major, gpa, email)
@@ -96,12 +99,15 @@ class StudentDatabase:
             )
             self.connection.commit()
             print("Record added successfully.")
+            return True
         except sqlite3.IntegrityError:
             print("Error: Student ID already exists.")
+            return False
         except sqlite3.Error as e:
             print(f"An error occurred: {e}")
+            return False
    
-   #Edit record from database
+   #Updates a specified field for the given student_id.
    #ONLY EDIT DATA IF record is found, and data is correct 
     def edit_record(self, student_id, field, new_value):
         valid_fields = {"first_name", "last_name", "date_of_birth", "major", "gpa", "email"}
@@ -123,7 +129,7 @@ class StudentDatabase:
         except sqlite3.Error as e:
             print(f"An error occurred: {e}")
     
-    #Delete record from database
+    #Deletes a student record by student_id
     #ONLY DELETE DATA IF valid record, "ARE YOU SURE YOU WANT TO DELTE THIS RECORD?"
     def delete_record(self, student_id):
         cursor = self.connection.cursor()
@@ -136,8 +142,8 @@ class StudentDatabase:
                 print("Error: Student not found.")
         except sqlite3.Error as e:
             print(f"An error occurred: {e}")
-    
-    #View record/s from database
+
+    #Fetches all records from the database.
     #View data from different queries (SELECT *, SELECT * FROM -- WHERE gpa > '2.5', ect)
     #TODO: ADD ABILITY TO QUERY DIFFERENT SQL STATEMENTS
     def view_records(self):
