@@ -1,7 +1,6 @@
 import sqlite3
 import tkinter as tk
-from tkinter import ttk, messagebox, scrolledtext
-from tkinter import simpledialog
+from tkinter import ttk, messagebox, scrolledtext, simpledialog
 from db_helper import StudentDatabase
 
 class StudentDatabaseApp:
