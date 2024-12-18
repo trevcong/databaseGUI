@@ -1,5 +1,7 @@
+import sqlite3
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
+from tkinter import simpledialog
 from db_helper import StudentDatabase
 
 class StudentDatabaseApp:
@@ -32,11 +34,37 @@ class StudentDatabaseApp:
         view_frame = ttk.Frame(self.notebook)
         self.notebook.add(view_frame, text='View Records')
 
+        # Create a frame for the controls
+        controls_frame = ttk.Frame(view_frame)
+        controls_frame.pack(fill='x', pady=5)
+
+        # Predefined SQL queries
+        self.queries = {
+            "All Records": "SELECT * FROM students",
+            "Custom Query": ""  # Placeholder for custom SQL input
+        }
+
+        # Create and pack the combobox
+        self.query_combobox = ttk.Combobox(
+            controls_frame, 
+            values=list(self.queries.keys()),
+            width=30,
+            state='readonly'
+        )
+        self.query_combobox.set("All Records")  # Default value
+        self.query_combobox.pack(side=tk.LEFT, padx=5)
+
+        # Move the refresh button to the right
+        self.view_button = tk.Button(
+            controls_frame, 
+            text="Refresh Records", 
+            command=self.view_records
+        )
+        self.view_button.pack(side=tk.LEFT, padx=5)
+
+        # Create the text area for displaying results
         self.text_area = scrolledtext.ScrolledText(view_frame, width=50, height=15)
         self.text_area.pack(pady=10)
-
-        self.view_button = tk.Button(view_frame, text="Refresh Records", command=self.view_records)
-        self.view_button.pack(pady=5)
 
     #Input fields:
         #Student ID, First Name, Last Name, Date of Birth, Major, GPA, Email.
@@ -107,10 +135,32 @@ class StudentDatabaseApp:
     def view_records(self):
         self.text_area.delete(1.0, tk.END)
         cursor = self.database.connection.cursor()
-        cursor.execute("SELECT * FROM students")
-        records = cursor.fetchall()
-        for record in records:
-            self.text_area.insert(tk.END, f"{record}\n")
+        
+        # Get the selected query
+        selected_query = self.query_combobox.get()
+        query = self.queries[selected_query]
+        
+        if selected_query == "Custom Query":
+            # Prompt user for custom SQL input
+            query = simpledialog.askstring("Input", "Enter your SQL query:")
+            if not query:
+                self.text_area.insert(tk.END, "No query entered.\n")
+                return
+        
+        try:
+            cursor.execute(query)
+            records = cursor.fetchall()
+            
+            # Add header showing which query was executed
+            self.text_area.insert(tk.END, f"Executing: {selected_query}\n")
+            self.text_area.insert(tk.END, "-" * 50 + "\n\n")
+            
+            # Display records
+            for record in records:
+                self.text_area.insert(tk.END, f"{record}\n")
+                
+        except sqlite3.Error as e:
+            self.text_area.insert(tk.END, f"Error executing query: {e}")
 
     # Collects input data, validates it, and adds a new student record
     def add_record(self):
