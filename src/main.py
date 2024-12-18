@@ -30,38 +30,40 @@ class StudentDatabaseApp:
     #Displays all student records in a scrollable text area
     #Button: "Refresh Records" to reload data
     def create_view_tab(self):
+        #This creates the VIEW RECORDS tab
+        #This is for viewing student records
         view_frame = ttk.Frame(self.notebook)
         self.notebook.add(view_frame, text='View Records')
 
-        # Create a frame for the controls
+        #Create a frame for the controls
         controls_frame = ttk.Frame(view_frame)
         controls_frame.pack(fill='x', pady=5)
 
-        # Predefined SQL queries
+        #Predefined SQL queries
         self.queries = {
             "All Records": "SELECT * FROM students",
-            "Custom Query": ""  # Placeholder for custom SQL input
+            "Custom Query": ""  # Custom SQL query
         }
 
-        # Create and pack the combobox
+        #Combobox for selecting queries
         self.query_combobox = ttk.Combobox(
             controls_frame, 
             values=list(self.queries.keys()),
             width=30,
             state='readonly'
         )
-        self.query_combobox.set("All Records")  # Default value
+        self.query_combobox.set("All Records")  #Default selection
         self.query_combobox.pack(side=tk.LEFT, padx=5)
 
-        # Move the refresh button to the right
-        self.view_button = tk.Button(
+        #Button to refresh the records
+        self.view_button = tk.Button( 
             controls_frame, 
             text="Refresh Records", 
             command=self.view_records
         )
         self.view_button.pack(side=tk.LEFT, padx=5)
 
-        # Create the text area for displaying results
+        #Text area for displaying results
         self.text_area = scrolledtext.ScrolledText(view_frame, width=50, height=15)
         self.text_area.pack(pady=10)
 
@@ -69,59 +71,79 @@ class StudentDatabaseApp:
         #Student ID, First Name, Last Name, Date of Birth, Major, GPA, Email.
     #Button: "Add Record" to add a student
     def create_add_tab(self):
+        #Creates the ADD RECORD tab
+        #Allows for adding new student records
         add_frame = ttk.Frame(self.notebook)
         self.notebook.add(add_frame, text='Add Record')
 
-        self.student_id_entry = self.create_labeled_entry(add_frame, "Student ID:")
-        self.first_name_entry = self.create_labeled_entry(add_frame, "First Name:")
-        self.last_name_entry = self.create_labeled_entry(add_frame, "Last Name:")
-        self.dob_entry = self.create_labeled_entry(add_frame, "Date of Birth (YYYY-MM-DD):")
-        self.major_entry = self.create_labeled_entry(add_frame, "Major:")
-        self.gpa_entry = self.create_labeled_entry(add_frame, "GPA:")
-        self.email_entry = self.create_labeled_entry(add_frame, "Email:")
+        #Entry fields for student data
+        self.student_id_entry = self.create_label_search(add_frame, "Student ID:")
+        self.first_name_entry = self.create_label_search(add_frame, "First Name:")
+        self.last_name_entry = self.create_label_search(add_frame, "Last Name:")
+        self.dob_entry = self.create_label_search(add_frame, "Date of Birth (YYYY-MM-DD):")
+        self.major_entry = self.create_label_search(add_frame, "Major:")
+        self.gpa_entry = self.create_label_search(add_frame, "GPA:")
+        self.email_entry = self.create_label_search(add_frame, "Email:")
 
+        #Button to add a new record
         self.add_button = tk.Button(add_frame, text="Add Record", command=self.add_record)
         self.add_button.pack(pady=5)
 
     #SEARCH FIELDS: 
         #StudentID or email
-    #Editable fiels
-        #Same as add recird
+    #Editable fields
+        #Edit the fields needed, they will be populated with a successful search
     #Button/s:
         #'Search": Finds the record
         #"Save changes": Updates the record
     def create_edit_tab(self):
+        #Creates the EDIT RECORD tab
+        #Allows searching for and editing existing student records
         edit_frame = ttk.Frame(self.notebook)
         self.notebook.add(edit_frame, text='Edit Record')
 
-        self.search_id_entry = self.create_labeled_entry(edit_frame, "Search by Student ID:")
-        self.search_email_entry = self.create_labeled_entry(edit_frame, "Search by Email:")
+        #Search fields for student data
+        self.search_id_entry = self.create_label_search(edit_frame, "Search by Student ID:")
+        self.search_email_entry = self.create_label_search(edit_frame, "Search by Email:")
         self.search_button = tk.Button(edit_frame, text="Search", command=self.search_record)
         self.search_button.pack(pady=5)
+        
+        #Editable fields for student data
+        self.edit_student_id_entry = self.create_label_search(edit_frame, "Student ID:")
+        self.edit_first_name_entry = self.create_label_search(edit_frame, "First Name:")
+        self.edit_last_name_entry = self.create_label_search(edit_frame, "Last Name:")
+        self.edit_dob_entry = self.create_label_search(edit_frame, "Date of Birth (YYYY-MM-DD):")
+        self.edit_major_entry = self.create_label_search(edit_frame, "Major:")
+        self.edit_gpa_entry = self.create_label_search(edit_frame, "GPA:")
+        self.edit_email_entry = self.create_label_search(edit_frame, "Email:")
 
-        self.edit_student_id_entry = self.create_labeled_entry(edit_frame, "Student ID:")
-        self.edit_first_name_entry = self.create_labeled_entry(edit_frame, "First Name:")
-        self.edit_last_name_entry = self.create_labeled_entry(edit_frame, "Last Name:")
-        self.edit_dob_entry = self.create_labeled_entry(edit_frame, "Date of Birth (YYYY-MM-DD):")
-        self.edit_major_entry = self.create_labeled_entry(edit_frame, "Major:")
-        self.edit_gpa_entry = self.create_labeled_entry(edit_frame, "GPA:")
-        self.edit_email_entry = self.create_labeled_entry(edit_frame, "Email:")
-
+        #Button to save changes
         self.save_button = tk.Button(edit_frame, text="Save Changes", command=self.save_changes)
         self.save_button.pack(pady=5)
 
     # Input field: Student ID or Email
     # Button: "Search and Delete" to delete a record after confirmation 
     def create_delete_tab(self):
+        #Creates the DELETE RECORD tab
+        #Allows users to search for and delete student records
         delete_frame = ttk.Frame(self.notebook)
         self.notebook.add(delete_frame, text='Delete Record')
 
-        self.delete_entry = self.create_labeled_entry(delete_frame, "Search by Student ID or Email:")
+        #Entry field for student ID or email
+        self.delete_entry = self.create_label_search(delete_frame, "Search by Student ID or Email:")
         self.delete_button = tk.Button(delete_frame, text="Search and Delete", command=self.delete_record)
         self.delete_button.pack(pady=5)
 
     # Creates a labeled text entry field for user input.
-    def create_labeled_entry(self, parent, label_text):
+    def create_label_search(self, parent, label_text):
+        #Creates a labeled text entry field for user input based on parent
+
+        #Parameters
+            #parent (Frame): The parent frame to which the entry field belongs.
+            #label_text (str): The text for the label.
+
+        #Returns
+            #Entry: The created entry widget.
         frame = ttk.Frame(parent)
         frame.pack(pady=2)
         label = ttk.Label(frame, text=label_text)
@@ -132,15 +154,17 @@ class StudentDatabaseApp:
     
     # Fetches and displays all student records from the database
     def view_records(self):
+        #Fetches and displays all student records from the dfatabase
+        #Allows for predefined or custome SQL queries
         self.text_area.delete(1.0, tk.END)
         cursor = self.database.connection.cursor()
         
-        # Get the selected query
+        #Get the selected query
         selected_query = self.query_combobox.get()
         query = self.queries[selected_query]
         
         if selected_query == "Custom Query":
-            # Prompt user for custom SQL input
+            #Prompt user for custom SQL input
             query = simpledialog.askstring("Input", "Enter your SQL query:")
             if not query:
                 self.text_area.insert(tk.END, "No query entered.\n")
@@ -150,11 +174,11 @@ class StudentDatabaseApp:
             cursor.execute(query)
             records = cursor.fetchall()
             
-            # Add header showing which query was executed
+            #Add header showing which query was executed
             self.text_area.insert(tk.END, f"Executing: {selected_query}\n")
             self.text_area.insert(tk.END, "-" * 50 + "\n\n")
             
-            # Display records
+            #Display records
             for record in records:
                 self.text_area.insert(tk.END, f"{record}\n")
                 
@@ -163,6 +187,7 @@ class StudentDatabaseApp:
 
     # Collects input data, validates it, and adds a new student record
     def add_record(self):
+        #Collect stundet data
         student = {
             "student_id": self.student_id_entry.get(),
             "first_name": self.first_name_entry.get(),
@@ -173,18 +198,19 @@ class StudentDatabaseApp:
             "email": self.email_entry.get()
         }
 
-        # Validate student data
+        #Validate student data
         validation_error = self.database.validate_student_data(student)
         if validation_error:
             messagebox.showerror("Input Error", validation_error)
             return
 
-        # Attempt to add the record
+        #Attempt to add the record
         if self.database.add_record(student):
             self.clear_entries()
             messagebox.showinfo("Success", "Record added successfully.")
         else:
             messagebox.showerror("Error", "Failed to add record. Please check your inputs.")
+    
     # Clears all input fields after successful addition
     def clear_entries(self):
         self.student_id_entry.delete(0, tk.END)
@@ -194,6 +220,7 @@ class StudentDatabaseApp:
         self.major_entry.delete(0, tk.END)
         self.gpa_entry.delete(0, tk.END)
         self.email_entry.delete(0, tk.END)
+
     # Searches for a student by student_id or email
     def search_record(self):
         student_id = self.search_id_entry.get()
@@ -230,6 +257,7 @@ class StudentDatabaseApp:
     # Updates student data for the searched record
     def save_changes(self):
         student_id = self.edit_student_id_entry.get()
+        #updated student records
         updated_student = {
             "first_name": self.edit_first_name_entry.get(),
             "last_name": self.edit_last_name_entry.get(),
@@ -265,6 +293,7 @@ class StudentDatabaseApp:
                 messagebox.showinfo("Success", "Record deleted successfully.")
             else:
                 messagebox.showinfo("Not Found", "No student found with the given ID or Email.")
+   
     # Closes the database connection and exits the application
     def exit_application(self):
         self.database.close()
