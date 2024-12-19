@@ -48,7 +48,7 @@ class StudentDatabase:
     # PARAM: STUDENT OBJECT
     # IF RETURN NONE THEN IT IS VALID DATA, otherwise return an error message.   
     def validate_student_data(self, student):
-        if not student["student_id"].isalnum():
+        if not student["student_id"].isalnum(): 
             return "Error: Student ID must be alphanumeric."
 
         if not student["first_name"].isalpha():
@@ -56,7 +56,7 @@ class StudentDatabase:
 
         if not student["last_name"].isalpha():
             return "Error: Last Name must contain only letters."
-
+                        
         if not re.match(r"\d{4}-\d{2}-\d{2}", student["date_of_birth"]):
             return "Error: Date of Birth must be in YYYY-MM-DD format."
 
@@ -64,7 +64,7 @@ class StudentDatabase:
             datetime.datetime.strptime(student["date_of_birth"], "%Y-%m-%d")
         except ValueError:
             return "Error: Date of Birth is not a valid date."
-
+                            
         if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", student["email"]):
             return "Error: Email format is invalid."
 

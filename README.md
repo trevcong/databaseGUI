@@ -1,12 +1,34 @@
 # databaseGUI
 TODO: 
 
-VIEW RECORDS: Lets made it so you can search based on different queries
+CLEAN UP GUI
+MAKE MORE USER FRIENDLY
+CUSTOM FONT
 
+TODO:
 
-GUI:
-* Make it more user freindly
-* Make it so users cant enter weird values ( ie. "GPA" for a GPA field)
+1. NAME APP (MATRIX VIEW)
 
+2. UX
+    FONT
+    COLOR
+    IMAGES ( BUTTONS ECT )
+    SIZE WINDOW
 
-MAKE SURE MAIN.py ONLY SERVES AS A DRIVER CLASS NOT AS A HELPER CLASS db_helper.py
+3.
+    VIEW RECORDS
+        First_name , Last_name , Email , Major
+
+    MAIN GUI SCREEN ENTRY POINT
+    LOGIN 
+        ADMIN : Everything
+        STUDENT : First_name , Last_name , Email , Major
+
+    ADMIN GUI 
+        WHAT WE HAVE NOW
+    STUDENT GUI 
+        SCREEN WITH JUST VIEW RECORD
+
+4. VIEW RECORDS IN A CLEANER FORMAT
+
+4. DELETE RECORDS, RECORD SHOULD SHOW BEFORE DELETING

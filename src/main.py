@@ -5,7 +5,7 @@ from db_helper import StudentDatabase
 
 class StudentDatabaseApp:
     #CONSTRUCTOR
-    # Root: THE MAIN TKINTER WINDOW
+    #Root: THE MAIN TKINTER WINDOW
     #INIT database GUI components
     def __init__(self, root):
         self.root = root
@@ -38,13 +38,14 @@ class StudentDatabaseApp:
         #Create a frame for the controls
         controls_frame = ttk.Frame(view_frame)
         controls_frame.pack(fill='x', pady=5)
+       
 
         #Predefined SQL queries
         self.queries = {
             "All Records": "SELECT * FROM students",
             "Custom Query": ""  # Custom SQL query
         }
-
+        
         #Combobox for selecting queries
         self.query_combobox = ttk.Combobox(
             controls_frame, 
@@ -77,7 +78,7 @@ class StudentDatabaseApp:
         self.notebook.add(add_frame, text='Add Record')
 
         #Entry fields for student data
-        self.student_id_entry = self.create_label_search(add_frame, "Student ID:")
+        self.student_id_entry = self.create_label_search(add_frame, "Student ID:") #ADD LABEL 
         self.first_name_entry = self.create_label_search(add_frame, "First Name:")
         self.last_name_entry = self.create_label_search(add_frame, "Last Name:")
         self.dob_entry = self.create_label_search(add_frame, "Date of Birth (YYYY-MM-DD):")
