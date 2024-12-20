@@ -312,6 +312,8 @@ class StudentDatabaseApp:
         messagebox.showinfo("Success", "Record updated successfully.")
 
     def delete_record(self):
+        #DELTE RECORD, BASED ON STUDENT ID OR EMAIL
+        #CONFIRM YOU WANT TO DELETE RECORD BEFORE DELETING
         student_id_or_email = self.delete_entry.get()
         if not student_id_or_email:
             messagebox.showwarning("Input Error", "Please enter a Student ID or Email to delete.")
@@ -328,6 +330,7 @@ class StudentDatabaseApp:
                 messagebox.showinfo("Not Found", "No student found with the given ID or Email.")
 
     def exit_application(self):
+        #EXIT APPLICATION
         self.database.close()
         self.root.quit()
 
