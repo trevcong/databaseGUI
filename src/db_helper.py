@@ -113,6 +113,7 @@ class StudentDatabase:
    
    #Updates a specified field for the given student_id.
    #ONLY EDIT DATA IF record is found, and data is correct 
+   #SMALL PARTS OF LOGIC KEPT, WE DONT NEED TO VERIFY THE FIELD NOW SINCE WE ARE USING THE GUI
     def edit_record(self, student_id, field, new_value):
         valid_fields = {"first_name", "last_name", "date_of_birth", "major", "gpa", "email"}
         if field not in valid_fields:
