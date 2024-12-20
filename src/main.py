@@ -42,7 +42,7 @@ class StudentDatabaseApp:
         self.default_font = tkFont.Font(family="Comic Sans MS", size=12)
         self.label_font = tkFont.Font(family="Comic Sans MS", size=14, weight="bold")
         #Load the database
-        self.database = StudentDatabase()
+        self.database = StudentDatabase() 
         self.database.load()
 
         self.user_type = None
