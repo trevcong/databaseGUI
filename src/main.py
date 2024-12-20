@@ -223,6 +223,7 @@ class StudentDatabaseApp:
         #IF RETURN NONE
         #   CONT.
         #THEN TRY TO ADD TO DATABASE WITH reference to database class as database.add_record
+        #CLEAR ENTRIES IF SUCCESS
         student = {
             "student_id": self.student_id_entry.get(),
             "first_name": self.first_name_entry.get(),
