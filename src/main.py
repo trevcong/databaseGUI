@@ -217,6 +217,12 @@ class StudentDatabaseApp:
             self.text_area.insert(tk.END, f"Error executing query: {e}")
 
     def add_record(self):
+        #ADD record to database
+        #GET data from fields, pack into a dict
+        #PASS DICT TO validate_student_data
+        #IF RETURN NONE
+        #   CONT.
+        #THEN TRY TO ADD TO DATABASE WITH reference to database class as database.add_record
         student = {
             "student_id": self.student_id_entry.get(),
             "first_name": self.first_name_entry.get(),
