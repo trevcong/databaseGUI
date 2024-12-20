@@ -1,7 +1,12 @@
 import sqlite3
 import tkinter as tk
+from cgitb import small
 from tkinter import ttk, messagebox, scrolledtext, simpledialog
+from fontTools.subset import load_font
 from db_helper import StudentDatabase
+from tkinter import font
+
+
 
 class StudentDatabaseApp:
     #CONSTRUCTOR
@@ -9,12 +14,36 @@ class StudentDatabaseApp:
     #INIT database GUI components
     def __init__(self, root):
         self.root = root
-        self.root.title("Student Database App")
+        self.root.title("Matrix Viewer")
+        #START OF TITLE FRAME CHANGE
+        #self.root.overrideredirect(True)
+        
+        self.title_bar = tk.Frame(root, bg="black", relief="raised", bd=5)
+        self.title_bar.pack(side="top", fill="x")
+
+
+
+        # Title label
+        self.title_label = tk.Label(self.title_bar, text="Matrix Viewer", font= ("Exwayer", 25 ), bg="black", fg="green")
+        self.title_label.pack(side="left", padx=10, pady=5)
+
+        # Bind mouse events to the resize frame
+        self.root.geometry("600x700")
+        self.root.resizable(True, True)
+
+
+        #END OF TITLE BAR MODIFICATION
+
         self.database = StudentDatabase()
         self.database.load()
-
+        #This line of code adds pizaz to the notebook pages
+        self.s = ttk.Style()
+        self.s.configure('TNotebook.Tab', foreground = "green", background = "black", font= ("Exwayer" , 20)   )
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(expand=True, fill='both')
+        #adds color to the notebook pages!
+        self.page = tk.Frame(self.notebook, bg = "gray")
+
 
         # Create tabs: View Records, Add Record, Edit Record, and Delete Record.
         self.create_view_tab()
@@ -26,46 +55,51 @@ class StudentDatabaseApp:
         self.exit_button = tk.Button(self.root, text="Exit", command=self.exit_application)
         self.exit_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-
     #Displays all student records in a scrollable text area
     #Button: "Refresh Records" to reload data
     def create_view_tab(self):
         #This creates the VIEW RECORDS tab
         #This is for viewing student records
         view_frame = ttk.Frame(self.notebook)
-        self.notebook.add(view_frame, text='View Records')
+
+        self.notebook.add(view_frame,text='View Records')
 
         #Create a frame for the controls
-        controls_frame = ttk.Frame(view_frame)
+        controls_frame = tk.Frame(view_frame)
         controls_frame.pack(fill='x', pady=5)
        
 
         #Predefined SQL queries
         self.queries = {
             "All Records": "SELECT * FROM students",
-            "Custom Query": ""  # Custom SQL query
+            "Custom Query": "" # Custom SQL query
         }
         
         #Combobox for selecting queries
         self.query_combobox = ttk.Combobox(
             controls_frame, 
-            values=list(self.queries.keys()),
+            values=list(self.queries.keys() ),
             width=30,
-            state='readonly'
+            state='readonly',
+            background= "black",
+            foreground =   "green",
+
         )
         self.query_combobox.set("All Records")  #Default selection
         self.query_combobox.pack(side=tk.LEFT, padx=5)
 
         #Button to refresh the records
-        self.view_button = tk.Button( 
+
+        self.view_button = tk.Button(
             controls_frame, 
-            text="Refresh Records", 
+            text="Refresh Records",
             command=self.view_records
         )
         self.view_button.pack(side=tk.LEFT, padx=5)
 
         #Text area for displaying results
-        self.text_area = scrolledtext.ScrolledText(view_frame, width=50, height=15)
+        self.text_area = scrolledtext.ScrolledText(view_frame, width=70, height=20,
+                                                   font = "Arial", foreground = "green", background = "black")
         self.text_area.pack(pady=10)
 
     #Input fields:
@@ -74,17 +108,17 @@ class StudentDatabaseApp:
     def create_add_tab(self):
         #Creates the ADD RECORD tab
         #Allows for adding new student records
-        add_frame = ttk.Frame(self.notebook)
+        add_frame = tk.Frame(self.notebook, bg = "black")
         self.notebook.add(add_frame, text='Add Record')
 
         #Entry fields for student data
-        self.student_id_entry = self.create_label_search(add_frame, "Student ID:") #ADD LABEL 
+        self.student_id_entry = self.create_label_search(add_frame, "Student ID:") #ADD LABEL
         self.first_name_entry = self.create_label_search(add_frame, "First Name:")
-        self.last_name_entry = self.create_label_search(add_frame, "Last Name:")
-        self.dob_entry = self.create_label_search(add_frame, "Date of Birth (YYYY-MM-DD):")
-        self.major_entry = self.create_label_search(add_frame, "Major:")
-        self.gpa_entry = self.create_label_search(add_frame, "GPA:")
-        self.email_entry = self.create_label_search(add_frame, "Email:")
+        self.last_name_entry  = self.create_label_search(add_frame, "Last Name:")
+        self.dob_entry        = self.create_label_search(add_frame, "Date of Birth (YYYY-MM-DD):")
+        self.major_entry      = self.create_label_search(add_frame, "Major:")
+        self.gpa_entry        = self.create_label_search(add_frame, "GPA:")
+        self.email_entry      = self.create_label_search(add_frame, "Email:")
 
         #Button to add a new record
         self.add_button = tk.Button(add_frame, text="Add Record", command=self.add_record)
@@ -145,10 +179,12 @@ class StudentDatabaseApp:
 
         #Returns
             #Entry: The created entry widget.
+
         frame = ttk.Frame(parent)
         frame.pack(pady=2)
         label = ttk.Label(frame, text=label_text)
         label.pack(side=tk.LEFT)
+        label.config(font =("Exwayer", 30 , "bold"), foreground= "darkgreen", background="black")
         entry = ttk.Entry(frame)
         entry.pack(side=tk.RIGHT)
         return entry
@@ -175,9 +211,11 @@ class StudentDatabaseApp:
             cursor.execute(query)
             records = cursor.fetchall()
             
-            #Add header showing which query was executed
-            self.text_area.insert(tk.END, f"Executing: {selected_query}\n")
-            self.text_area.insert(tk.END, "-" * 50 + "\n\n")
+            #Add header showing which query was executed  + Modified to match the lists of users info (Luis)
+            self.text_area.insert(tk.END, f"{selected_query}\n")
+            self.text_area.insert(tk.END,   "-" * 3 + "ID"+ "-" * 3 + "First/Last Name" +  "-" * 3 +
+                                  "Date of Birth" + "-" * 5 + "Major" + "-" * 5 + "GPA" + "-" * 5 + "Email" + "\n \n"
+                                  )
             
             #Display records
             for record in records:
@@ -294,7 +332,11 @@ class StudentDatabaseApp:
                 messagebox.showinfo("Success", "Record deleted successfully.")
             else:
                 messagebox.showinfo("Not Found", "No student found with the given ID or Email.")
-   
+
+    #enabling data entry again
+    def set_focus(self, event):
+        self.entry.focus_set()
+        
     # Closes the database connection and exits the application
     def exit_application(self):
         self.database.close()
