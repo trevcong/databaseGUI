@@ -246,6 +246,7 @@ class StudentDatabaseApp:
             messagebox.showerror("Error", "Failed to add record. Please check your inputs.")
     
     def clear_entries(self):
+        #CLEAR TEXT FIELDS ONCE CALLED
         self.student_id_entry.delete(0, tk.END)
         self.first_name_entry.delete(0, tk.END)
         self.last_name_entry.delete(0, tk.END)
@@ -255,6 +256,8 @@ class StudentDatabaseApp:
         self.email_entry.delete(0, tk.END)
 
     def search_record(self):
+        #SEARCH RECORDS BASED ON EMAIL OR STUDENT ID
+        #IF YOU SEARCH FOR ANOTHER STUDENT THE FIELS ARE CLEARED
         student_id = self.search_id_entry.get()
         email = self.search_email_entry.get()
         cursor = self.database.connection.cursor()
@@ -287,6 +290,7 @@ class StudentDatabaseApp:
             messagebox.showinfo("Not Found", "No student found with the given ID or Email.")
 
     def save_changes(self):
+        #SAVE CHANGES TO DATABASE
         student_id = self.edit_student_id_entry.get()
         updated_student = {
             "first_name": self.edit_first_name_entry.get(),
