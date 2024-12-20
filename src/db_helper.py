@@ -49,7 +49,7 @@ class StudentDatabase:
         print("Database connection opened.") #NOT NEEDED 
 
     #Validate Student Data
-    # PARAM: STUDENT OBJECT
+    # PARAM: STUDENT in the form of a dictionary
     # IF RETURN NONE THEN IT IS VALID DATA, otherwise return an error message.   
     def validate_student_data(self, student):
         if not student["student_id"].isalnum(): 
@@ -68,7 +68,7 @@ class StudentDatabase:
             datetime.datetime.strptime(student["date_of_birth"], "%Y-%m-%d")
         except ValueError:
             return "Error: Date of Birth is not a valid date."
-                            
+        #THIS CHECK IS REDUNDANT ** IT IS FINE AS IT HAS NOT BROKEN THE APPLICATION YET
         if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", student["email"]):
             return "Error: Email format is invalid."
 
