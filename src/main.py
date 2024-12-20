@@ -5,42 +5,60 @@ from tkinter import font as tkFont
 from db_helper import StudentDatabase
 
 class StudentDatabaseApp:
+    #GUI APPLICATION for managing student database
+    #Features include:
+    #   Admin view: Viewing, Adding, editing, and deleting students
+    #   Student view: Viewing students
+
+    #Attributes:
+    #   root (tk.Tk): The root window of the application.
+    #   database (StudentDatabase): An instance of the StudentDatabase helper class.
+    #   user_type (str): Stores the type of user ('student' or 'admin') after login.
+    #   default_font (tkFont.Font): The default font used across the application.
+    #   label_font (tkFont.Font): The font used for labels in the application.
+    #   style (ttk.Style): Style configuration for ttk widgets.
     def __init__(self, root):
+        #Initializes the StudentDatabaseApp with the root window and sets up the application.
+        #Args:
+        #   root (tk.Tk): The root window of the application.
         self.root = root
         self.root.title("Matrix Viewer")
         self.root.geometry("600x700")
         self.root.configure(bg="black")
 
-        # Create a custom style for ttk widgets
+        #Style for ttk widgets
         self.style = ttk.Style()
         self.style.configure("TFrame", background="black")
         self.style.configure("TLabel", background="black", foreground="green")
         self.style.configure("TEntry", fieldbackground="black", foreground="green")
         self.style.configure("TButton", background="black", foreground="green")
 
-        # Define custom fonts for a playful look
+        #Custom fonts
         self.default_font = tkFont.Font(family="Comic Sans MS", size=12)
         self.label_font = tkFont.Font(family="Comic Sans MS", size=14, weight="bold")
-
+        #Load the database
         self.database = StudentDatabase()
         self.database.load()
 
         self.user_type = None
         self.create_login_screen()
 
-        # Bind the configure event to dynamically adjust font sizes
+        #Bind the configure event to dynamically adjust font sizes
         self.root.bind('<Configure>', self.adjust_font_size)
 
+    #
     def adjust_font_size(self, event=None):
-        # Calculate font size based on window width
+        #Calculate font size based on window width
+        #Dynamically adjusts font size based on the root window's width.
         width = self.root.winfo_width()
         font_size = max(12, int(width / 50))  # Adjust divisor for desired scaling
 
-        # Update font sizes dynamically
+        #Update font sizes
         self.default_font.config(size=font_size)
         self.label_font.config(size=font_size + 2)
 
     def create_login_screen(self):
+        #Creates the login screen where the user selects their role (student or admin).
         login_frame = tk.Frame(self.root, bg="black")
         login_frame.pack(expand=True, fill='both')
 
@@ -48,44 +66,22 @@ class StudentDatabaseApp:
         label.pack(pady=20)
 
         self.user_type_var = tk.StringVar(value="student")
-        student_radio = tk.Radiobutton(
-            login_frame,
-            text="Student",
-            variable=self.user_type_var,
-            value="student",
-            font=self.default_font,
-            bg="black",
-            fg="green",
-            selectcolor="black"
-        )
-        admin_radio = tk.Radiobutton(
-            login_frame,
-            text="Admin",
-            variable=self.user_type_var,
-            value="admin",
-            font=self.default_font,
-            bg="black",
-            fg="green",
-            selectcolor="black"
-        )
+        student_radio = tk.Radiobutton(login_frame, text="Student", variable=self.user_type_var, value="student", font=self.default_font, bg="black", fg="green", selectcolor="black")
+        admin_radio = tk.Radiobutton(login_frame, text="Admin", variable=self.user_type_var, value="admin", font=self.default_font, bg="black", fg="green",selectcolor="black")
         student_radio.pack(pady=5)
         admin_radio.pack(pady=5)
 
-        login_button = tk.Button(
-            login_frame, 
-            text="Login", 
-            command=self.login, 
-            font=self.default_font, 
-            bg="black", 
-            fg="green"
-        )
+        login_button = tk.Button(login_frame, text="Login", command=self.login, font=self.default_font, bg="black", fg="green")
         login_button.pack(pady=20)
 
     def login(self):
+        #Logs in the user and creates the main interface based on their role.
         self.user_type = self.user_type_var.get()
         self.create_main_interface()
 
     def create_main_interface(self):
+        #Creates the main interface: Tabs for viewing, adding, editing, 
+        #and deleting records based on user type.
         for widget in self.root.winfo_children():
             widget.destroy()
 
@@ -99,17 +95,11 @@ class StudentDatabaseApp:
             self.create_edit_tab()
             self.create_delete_tab()
 
-        exit_button = tk.Button(
-            self.root, 
-            text="Exit", 
-            command=self.exit_application, 
-            font=self.default_font, 
-            bg="black", 
-            fg="green"
-        )
+        exit_button = tk.Button(self.root, text="Exit", command=self.exit_application, font=self.default_font, bg="black", fg="green")
         exit_button.pack(side=tk.LEFT, padx=5, pady=5)
 
     def create_view_tab(self):
+        #Creates the 'View Records' tab to display student records from the database.
         view_frame = ttk.Frame(self.notebook, style='TFrame')
         self.notebook.add(view_frame, text='View Records')
 
@@ -121,36 +111,18 @@ class StudentDatabaseApp:
             "Custom Query": ""
         }
 
-        self.query_combobox = ttk.Combobox(
-            controls_frame,
-            values=list(self.queries.keys()),
-            width=30,
-            state='readonly'
-        )
+        self.query_combobox = ttk.Combobox(controls_frame, values=list(self.queries.keys()), width=30, state='readonly')
         self.query_combobox.set("All Records")
         self.query_combobox.pack(side=tk.LEFT, padx=5)
 
-        self.view_button = tk.Button(
-            controls_frame,
-            text="Refresh Records",
-            command=self.view_records,
-            font=self.default_font,
-            bg="black",
-            fg="green"
-        )
+        self.view_button = tk.Button(controls_frame, text="Refresh Records", command=self.view_records, font=self.default_font, bg="black", fg="green")
         self.view_button.pack(side=tk.LEFT, padx=5)
 
-        self.text_area = scrolledtext.ScrolledText(
-            view_frame,
-            width=70,
-            height=20,
-            font=self.default_font,
-            fg="green",
-            bg="black"
-        )
+        self.text_area = scrolledtext.ScrolledText(view_frame, width=70, height=20, font=self.default_font, fg="green", bg="black")
         self.text_area.pack(expand=True, fill='both', pady=10)
 
     def create_add_tab(self):
+        #Creates the 'Add Record' tab for admins to add new student records.
         add_frame = tk.Frame(self.notebook, bg="black")
         self.notebook.add(add_frame, text='Add Record')
 
@@ -162,17 +134,11 @@ class StudentDatabaseApp:
         self.gpa_entry = self.create_label_search(add_frame, "GPA:")
         self.email_entry = self.create_label_search(add_frame, "Email:")
 
-        self.add_button = tk.Button(
-            add_frame,
-            text="Add Record",
-            command=self.add_record,
-            font=self.default_font,
-            bg="black",
-            fg="green"
-        )
+        self.add_button = tk.Button(add_frame, text="Add Record", command=self.add_record, font=self.default_font, bg="black", fg="green")
         self.add_button.pack(pady=5)
 
     def create_edit_tab(self):
+        #Creats the "Edit record" tab for admins to add a new student record.
         edit_frame = ttk.Frame(self.notebook, style='TFrame')
         self.notebook.add(edit_frame, text='Edit Record')
 
@@ -193,6 +159,7 @@ class StudentDatabaseApp:
         self.save_button.pack(pady=5)
 
     def create_delete_tab(self):
+        #Creats the "Delete Record" tab for admins to delete a student record
         delete_frame = ttk.Frame(self.notebook, style='TFrame')
         self.notebook.add(delete_frame, text='Delete Record')
 
@@ -201,6 +168,12 @@ class StudentDatabaseApp:
         self.delete_button.pack(pady=5)
 
     def create_label_search(self, parent, label_text):
+        #Create a label and entry widget pair.
+        #param:
+        #   parent: The parent widget.
+        #   label_text (str): The text for the label.
+        #Returns:
+        #   ttk.Entry: The created entry widget.
         frame = ttk.Frame(parent, style='TFrame')
         frame.pack(pady=2)
         label = ttk.Label(frame, text=label_text, style="TLabel", font=self.default_font)
@@ -211,6 +184,7 @@ class StudentDatabaseApp:
 
 
     def view_records(self):
+        #Fetches and displays records based on the selected query in the 'View Records' tab.
         self.text_area.delete(1.0, tk.END)
         cursor = self.database.connection.cursor()
         

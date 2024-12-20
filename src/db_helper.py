@@ -156,8 +156,3 @@ class StudentDatabase:
         print()
 
 
-# start of the main page program for Matrix Viewer, ability to login as admin or just view as a student database
-class MainPage:
-    def __init__(self, parent, controller):
-        tk.frame.__init__(self,parent)
-
