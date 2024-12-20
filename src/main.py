@@ -1,3 +1,8 @@
+#Created by Trevor Conger & Luis Amador
+#Database Python GUI
+#Useable by students and admins of a school
+#DATE: 12/19/24
+
 import sqlite3
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext, simpledialog
