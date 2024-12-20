@@ -18,6 +18,10 @@ class StudentDatabaseApp:
         self.style.configure("TEntry", fieldbackground="black", foreground="green")
         self.style.configure("TButton", background="black", foreground="green")
 
+        # Define custom fonts for a playful look
+        self.default_font = tkFont.Font(family="Comic Sans MS", size=12)
+        self.label_font = tkFont.Font(family="Comic Sans MS", size=14, weight="bold")
+
         self.database = StudentDatabase()
         self.database.load()
 
@@ -30,33 +34,51 @@ class StudentDatabaseApp:
     def adjust_font_size(self, event=None):
         # Calculate font size based on window width
         width = self.root.winfo_width()
-        font_size = max(10, int(width / 60))  # Adjust divisor for desired scaling
+        font_size = max(12, int(width / 50))  # Adjust divisor for desired scaling
 
-        # Update font sizes
-        self.default_font = tkFont.Font(family="Arial", size=font_size)
-        self.label_font = tkFont.Font(family="Arial", size=font_size + 2, weight="bold")
-
-        # Apply updated fonts to widgets
-        for widget in self.root.winfo_children():
-            if isinstance(widget, tk.Label) or isinstance(widget, tk.Button) or isinstance(widget, tk.Radiobutton):
-                widget.config(font=self.default_font)
-            if isinstance(widget, scrolledtext.ScrolledText):
-                widget.config(font=self.default_font)
+        # Update font sizes dynamically
+        self.default_font.config(size=font_size)
+        self.label_font.config(size=font_size + 2)
 
     def create_login_screen(self):
         login_frame = tk.Frame(self.root, bg="black")
         login_frame.pack(expand=True, fill='both')
 
-        label = tk.Label(login_frame, text="Login as:", bg="black", fg="green")
+        label = tk.Label(login_frame, text="Login as:", font=self.label_font, bg="black", fg="green")
         label.pack(pady=20)
 
         self.user_type_var = tk.StringVar(value="student")
-        student_radio = tk.Radiobutton(login_frame, text="Student", variable=self.user_type_var, value="student", bg="black", fg="green", selectcolor="black")
-        admin_radio = tk.Radiobutton(login_frame, text="Admin", variable=self.user_type_var, value="admin", bg="black", fg="green", selectcolor="black")
+        student_radio = tk.Radiobutton(
+            login_frame,
+            text="Student",
+            variable=self.user_type_var,
+            value="student",
+            font=self.default_font,
+            bg="black",
+            fg="green",
+            selectcolor="black"
+        )
+        admin_radio = tk.Radiobutton(
+            login_frame,
+            text="Admin",
+            variable=self.user_type_var,
+            value="admin",
+            font=self.default_font,
+            bg="black",
+            fg="green",
+            selectcolor="black"
+        )
         student_radio.pack(pady=5)
         admin_radio.pack(pady=5)
 
-        login_button = tk.Button(login_frame, text="Login", command=self.login, bg="black", fg="green")
+        login_button = tk.Button(
+            login_frame, 
+            text="Login", 
+            command=self.login, 
+            font=self.default_font, 
+            bg="black", 
+            fg="green"
+        )
         login_button.pack(pady=20)
 
     def login(self):
@@ -77,7 +99,14 @@ class StudentDatabaseApp:
             self.create_edit_tab()
             self.create_delete_tab()
 
-        exit_button = tk.Button(self.root, text="Exit", command=self.exit_application, bg="black", fg="green")
+        exit_button = tk.Button(
+            self.root, 
+            text="Exit", 
+            command=self.exit_application, 
+            font=self.default_font, 
+            bg="black", 
+            fg="green"
+        )
         exit_button.pack(side=tk.LEFT, padx=5, pady=5)
 
     def create_view_tab(self):
@@ -93,7 +122,7 @@ class StudentDatabaseApp:
         }
 
         self.query_combobox = ttk.Combobox(
-            controls_frame, 
+            controls_frame,
             values=list(self.queries.keys()),
             width=30,
             state='readonly'
@@ -102,14 +131,23 @@ class StudentDatabaseApp:
         self.query_combobox.pack(side=tk.LEFT, padx=5)
 
         self.view_button = tk.Button(
-            controls_frame, 
+            controls_frame,
             text="Refresh Records",
             command=self.view_records,
-            bg="black", fg="green"
+            font=self.default_font,
+            bg="black",
+            fg="green"
         )
         self.view_button.pack(side=tk.LEFT, padx=5)
 
-        self.text_area = scrolledtext.ScrolledText(view_frame, width=70, height=20, font="Arial", fg="green", bg="black")
+        self.text_area = scrolledtext.ScrolledText(
+            view_frame,
+            width=70,
+            height=20,
+            font=self.default_font,
+            fg="green",
+            bg="black"
+        )
         self.text_area.pack(expand=True, fill='both', pady=10)
 
     def create_add_tab(self):
@@ -124,7 +162,14 @@ class StudentDatabaseApp:
         self.gpa_entry = self.create_label_search(add_frame, "GPA:")
         self.email_entry = self.create_label_search(add_frame, "Email:")
 
-        self.add_button = tk.Button(add_frame, text="Add Record", command=self.add_record, bg="black", fg="green")
+        self.add_button = tk.Button(
+            add_frame,
+            text="Add Record",
+            command=self.add_record,
+            font=self.default_font,
+            bg="black",
+            fg="green"
+        )
         self.add_button.pack(pady=5)
 
     def create_edit_tab(self):
@@ -158,9 +203,9 @@ class StudentDatabaseApp:
     def create_label_search(self, parent, label_text):
         frame = ttk.Frame(parent, style='TFrame')
         frame.pack(pady=2)
-        label = ttk.Label(frame, text=label_text, style="TLabel")
+        label = ttk.Label(frame, text=label_text, style="TLabel", font=self.default_font)
         label.pack(side=tk.LEFT)
-        entry = ttk.Entry(frame, style="TEntry")
+        entry = ttk.Entry(frame, style="TEntry", font=self.default_font)
         entry.pack(side=tk.RIGHT, fill='x', expand=True)
         return entry
 
