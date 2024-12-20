@@ -147,16 +147,6 @@ class StudentDatabase:
         except sqlite3.Error as e:
             print(f"An error occurred: {e}")
 
-    #Fetches all records from the database.
-    #View data from different queries (SELECT *, SELECT * FROM -- WHERE gpa > '2.5', ect)
-    #TODO: ADD ABILITY TO QUERY DIFFERENT SQL STATEMENTS
-    def view_records(self):
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM students")
-        records = cursor.fetchall()
-        print("\nStudent Records:")
-        for record in records:
-            print(record)
-        print()
+  
 
 
