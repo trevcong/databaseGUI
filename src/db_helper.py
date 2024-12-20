@@ -41,12 +41,12 @@ class StudentDatabase:
     def close(self):
         if self.connection:
             self.connection.close()
-            print("Database connection closed.")
+            print("Database connection closed.") #NOT NEEDED 
 
     #opens a connection to the database
     def load(self):
         self.connection = sqlite3.connect(self.db)
-        print("Database connection opened.")
+        print("Database connection opened.") #NOT NEEDED 
 
     #Validate Student Data
     # PARAM: STUDENT OBJECT
@@ -102,13 +102,13 @@ class StudentDatabase:
                 )
             )
             self.connection.commit()
-            print("Record added successfully.")
+            print("Record added successfully.") #NOT NEEDED 
             return True
         except sqlite3.IntegrityError:
-            print("Error: Student ID already exists.")
+            print("Error: Student ID already exists.") #NOT NEEDED 
             return False
         except sqlite3.Error as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {e}") #NOT NEEDED 
             return False
    
    #Updates a specified field for the given student_id.
@@ -116,7 +116,7 @@ class StudentDatabase:
     def edit_record(self, student_id, field, new_value):
         valid_fields = {"first_name", "last_name", "date_of_birth", "major", "gpa", "email"}
         if field not in valid_fields:
-            print("Error: Invalid field name.")
+            print("Error: Invalid field name.") #NOT NEEDED 
             return
 
         cursor = self.connection.cursor()
@@ -127,11 +127,11 @@ class StudentDatabase:
             )
             if cursor.rowcount > 0:
                 self.connection.commit()
-                print("Record updated successfully.")
+                print("Record updated successfully.") #NOT NEEDED  
             else:
-                print("Error: Student not found.")
+                print("Error: Student not found.") #NOT NEEDED 
         except sqlite3.Error as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {e}") #NOT NEEDED 
     
     #Deletes a student record by student_id
     #ONLY DELETE DATA IF valid record, "ARE YOU SURE YOU WANT TO DELTE THIS RECORD?"
@@ -141,11 +141,11 @@ class StudentDatabase:
             cursor.execute("DELETE FROM students WHERE student_id = ?", (student_id,))
             if cursor.rowcount > 0:
                 self.connection.commit()
-                print("Record deleted successfully.")
+                print("Record deleted successfully.") #NOT NEEDED 
             else:
-                print("Error: Student not found.")
+                print("Error: Student not found.") #NOT NEEDED 
         except sqlite3.Error as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {e}") #NOT NEEDED 
 
   
 
